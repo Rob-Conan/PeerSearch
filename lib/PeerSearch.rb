@@ -3,6 +3,11 @@ require 'socket'
 
 module PeerSearch
 
+  class SearchResults
+
+
+  end
+
   ARGV.each do|a|
     puts "Argument: #{a}"
   end
@@ -15,7 +20,23 @@ module PeerSearch
 
   def joinNetwork(relay_node)
 
+    return 1
+  end
+
+  def leaveNetwork(network_id)
+
+
+      return true
+  end
+
+  def indexPage(url, *unique_words)
+
 
   end
+
+  #Not sure how to define below
+  #SearchResults[] search(*words)
+
+
 
 end
