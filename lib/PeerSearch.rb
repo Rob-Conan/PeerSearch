@@ -1,5 +1,6 @@
 require 'PeerSearch/version'
 require 'socket'
+require 'MessageFormat'
 
 module PeerSearch
 
@@ -36,6 +37,10 @@ module PeerSearch
 
   #Not sure how to define below
   #SearchResults[] search(*words)
+  m = MessageFormat.new
+
+  puts m.JOINING_NETWORK("1", "127.0.0.1")
+
 
 
 
