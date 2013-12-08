@@ -3,6 +3,14 @@ require 'json/add/core'
 
 class MessageFormat
 
+  def initialize
+
+  end
+
+  def hello
+    puts "Hello from Message Format"
+  end
+
   def JOINING_NETWORK(id, ip)
     value = {:type => 'JOINING_NETWORK', :node_id => id, :ip_address => ip}
     return value.to_json
