@@ -91,7 +91,7 @@ class PeerSearch
       else
         puts 'Sending'
         @node_socket.send @mf.JOINING_NETWORK(@index, @node_ip), 0, '127.0.0.1', @gateway_ip
-       # @net.startListening(@node_socket)
+        @net.startListening(@node_socket)
       end
   end
 

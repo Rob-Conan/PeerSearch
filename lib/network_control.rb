@@ -1,10 +1,12 @@
 require 'socket'
+require '../lib/MessageFormat.rb'
 
 class NetworkControl
   attr_accessor :routingtable
 
   def initialize(id, ip)
     @routingtable = Hash.new
+    @mf = MessageFormat.new
     routingtable[id] = ip
   end
 
@@ -21,6 +23,8 @@ class NetworkControl
     case process['type']
       when 'JOINING_NETWORK'
         updateRouting(process['node_id'], process['ip_address'])
+        #Works but needs to be the correct message
+        UDPSocket.open.send @mf.JOINING_NETWORK(1, 2), 0, '127.0.0.1', process['ip_address']
         #SEND RESPONSE
       when 'JOINING_NETWORK_REPLY'
 
@@ -49,7 +53,7 @@ class NetworkControl
       routingtable[id] = ip
       puts routingtable
     elsif routingtable.has_key?(id)
-      raise Exception, 'Node exists in Network'
+      raise Exception, 'Index exists in Network. Index\'s (Node ID\'s) must be unique'
     else
       routingtable[id] = ip
       puts routingtable
