@@ -48,8 +48,8 @@ class PeerSearch
       @is_bootstrap = true
       @gateway_id = hashCode(options[:node_id])
       @node_socket.bind('127.0.0.1', 8767)
-
-      puts @gateway_id
+      @index = @gateway_id
+      puts "Node ID: #{@index}"
     else
       if options[:bootstrap_ip] == nil
         raise TypeError, 'Please include the Bootstrap node Port'
@@ -72,7 +72,7 @@ class PeerSearch
       puts "Node ID: #{@index}"
     end
 
-    @net = NetworkControl.new(@gateway_id, 8767)
+    @net = NetworkControl.new(@index, @node_ip)
   end
 
   def hashCode(input)
@@ -87,10 +87,9 @@ class PeerSearch
       if @is_bootstrap
         puts 'Waiting for Client'
         @net.startListening(@node_socket)
-        puts 'Do you reach me'
       else
-        puts 'Sending'
-        @node_socket.send @mf.JOINING_NETWORK(@index, @node_ip), 0, '127.0.0.1', @gateway_ip
+        puts 'Sending...'
+        @node_socket.send @mf.JOINING_NETWORK(@index.to_s, @node_ip), 0, '127.0.0.1', @gateway_ip
         @net.startListening(@node_socket)
       end
   end

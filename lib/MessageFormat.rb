@@ -7,10 +7,6 @@ class MessageFormat
 
   end
 
-  def hello
-    puts "Hello from Message Format"
-  end
-
   def JOINING_NETWORK(id, ip)
     value = {:type => 'JOINING_NETWORK', :node_id => id, :ip_address => ip}
     return value.to_json
@@ -23,12 +19,10 @@ class MessageFormat
 
   end
 
-  def ROUTING_INFO(gateway_id, node_id, ip_address)
-    value = {:type => 'ROUTING_INFO', :gateway_id => gateway_id, :node_id => node_id, :ip_address => ip_address}
+  def ROUTING_INFO(gateway_id, node_id, ip_address, route)
+    value = {:type => 'ROUTING_INFO', :gateway_id => gateway_id, :node_id => node_id, :ip_address => ip_address, :route_table => route}
     return value.to_json
 
-
-    #How to return routing table?
   end
 
   def LEAVING_NETWORK(id)
