@@ -13,8 +13,20 @@ class MessageFormat
 
   end
 
+  def JOINING_NETWORK_SIMPLIFIED(id, target, ip)
+    value = {:type => 'JOINING_NETWORK', :node_id => id, :target_id => target, :ip_address => ip}
+    return value.to_json
+
+  end
+
   def JOINING_NETWORK_REPLY(id, gateway_id)
     value = {:type => 'JOINING_NETWORK_REPLY', :node_id => id, :gateway_id => gateway_id}
+    return value.to_json
+
+  end
+
+  def JOINING_NETWORK_REPLY_SIMPLIFIED(id, target_id, gateway_id)
+    value = {:type => 'JOINING_NETWORK_REPLY', :node_id => id, :target_id => target_id, :gateway_id => gateway_id}
     return value.to_json
 
   end
@@ -32,9 +44,8 @@ class MessageFormat
     #Not complete
   end
 
-  #Not sure on parameters
   def INDEX(target_id, sender_id, keyword, link)
-    value = {:type => 'INDEX', :target_id => "VALUE", :sender_id => "VALUE", :keyword => "VALUE"} #, :link => { "VALUE", "VALUE"}}
+    value = {:type => 'INDEX', :target_id => target_id, :sender_id => sender_id, :keyword => keyword , :link => link}
     return value.to_json
   end
 
@@ -44,8 +55,8 @@ class MessageFormat
   end
 
   #How to handle multiple url and tanks?
-  def SEARCH_RESPONSE(word, node_id, sender_id, url, rank)
-    value = {:type => 'SEARCH_RESPONSE', :word => word, :node_id => node_id, :sender_id => sender_id, :response => {:url => url, :rank => rank}}
+  def SEARCH_RESPONSE(word, node_id, sender_id, response)
+    value = {:type => 'SEARCH_RESPONSE', :word => word, :node_id => node_id, :sender_id => sender_id, :response => response}
     return value.to_json
   end
 

@@ -1,48 +1,25 @@
 require 'socket'
 require 'optparse'
 require '../lib/MessageFormat.rb'
-require '../lib/network_control.rb'
+require '../lib/NetworkControl.rb'
 
 class PeerSearch
   attr_accessor :gateway_id
   attr_accessor :node_ip
-  attr_accessor :gateway_ip
- # attr_accessor :is_bootstrap
-  attr_accessor :options
- # attr_accessor :node_socket
+  attr_accessor :this_ip
   attr_accessor :mf
-  attr_accessor :net
   attr_accessor :index
+  attr_accessor :node_socket
 
-  @@options = {}
 
-  optparse = OptionParser.new do |opts|
-    opts.banner = 'Usage: main.rb [options]'
-
-    opts.on('--boot', '--b bootID', 'Bootstrap ID') do |v|
-      @@options[:node_id] = v
-    end
-
-    opts.on('-p', '--port PORT', 'Connection Port/IP') do |p|
-      @@options[:port] = p
-    end
-
-    opts.on('--bootstrap', '--bs IP', 'Bootstrap node IP') do |a|
-      @@options[:bootstrap_ip] = a
-    end
-
-    opts.on('--index', '--id IN', 'Node ID/Index') do |a|
-      @@options[:index] = a
-    end
-
-  end
-  optparse.parse!
 
   #Initialize function to define the UDP socket connection
 
-  def init(s1)
+  def init(s1, ip)
     @mf = MessageFormat.new
     @node_socket = s1
+    @this_ip = ip.to_s.split(':')
+=begin
     if options[:node_id] != nil                    #If the bootstrap node
       puts 'Bootstrap Node'
       @is_bootstrap = true
@@ -70,9 +47,11 @@ class PeerSearch
       puts "Boot strap IP: #{@gateway_ip}"
       puts "Node IP: #{@node_ip}"
       puts "Node ID: #{@index}"
+
     end
 
     @net = NetworkControl.new(@index, @node_ip)
+=end
   end
 
   def hashCode(input)
@@ -83,19 +62,24 @@ class PeerSearch
     return hash.abs
   end
 
-  def joinNetwork
-      if @is_bootstrap
-        puts 'Waiting for Client'
-        @net.startListening(@node_socket)
-      else
-        puts 'Sending...'
-        @node_socket.send @mf.JOINING_NETWORK(@index.to_s, @node_ip), 0, '127.0.0.1', @gateway_ip
-        @net.startListening(@node_socket)
-      end
+  def joinNetwork(ip_address, index, bootID)
+    @node_ip = ip_address.split(':')
+    @index = hashCode(index.to_s)
+    @gateway_id = hashCode(bootID.to_s)
+
+    @net = NetworkControl.new(@index, @node_ip)
+
+    if @index != @gateway_id      #Not Bootstrap node
+      puts 'Client Node'
+      @node_socket.bind(@this_ip[0], @this_ip[1])
+      @node_socket.send @mf.JOINING_NETWORK_SIMPLIFIED(@index, @gateway_id, @this_ip), 0, @node_ip[0], @node_ip[1]
+    else
+      @node_socket.bind(@node_ip[0], @node_ip[1])
+    end
+    $thread = Thread.new do
+      @net.startListening(@node_socket)
+    end
   end
 
-  def options
-    @@options
-  end
 
 end
