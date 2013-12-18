@@ -56,8 +56,10 @@ class NetworkControl
           #find closest
           #sent on
         end
+
       when 'LEAVING_NETWORK'
         @rt.deleteEntry(process['node_id'])
+
       when 'INDEX'
         if @rt.matchNodeID(process['target_id'])
           @in.updateIndex(process['keyword'], process['link'])
@@ -74,6 +76,7 @@ class NetworkControl
         #Send back ACK
         @rt.findClosest(process['sender_id'])
         UDPSocket.open.send @mf.ACK(@rt.nodeID, @rt.nodeIP), 0, @rt.minIP[0], @rt.minIP[1]
+
       when 'SEARCH'
         if @rt.matchNodeID(process['node_id'])
           @rt.findClosest(process['sender_id'])
@@ -85,20 +88,23 @@ class NetworkControl
           @rt.findClosest(process['node_id'])
           UDPSocket.open.send process, 0, @rt.minIP[0], @rt.minIP[1]
         end
-      #Send all results
+
       when 'SEARCH_RESPONSE'
-        #IF Null
-        #Else
+        puts "The following results were found for your Query #{process['word']}"
+        ap process['reponse']
+
       when 'PING'
         if @rt.matchNodeID(process['node_id'])
           @rt.findClosest(process['sender_id'])
           UDPSocket.open.send @mf.ACK(@rt.nodeID, @rt.nodeIP), 0, @rt.minIP[0], @rt.minIP[1]
         end
+
       when 'ACK'
         if @rt.matchNodeID(process[''])
         else
           puts 'false'
         end
+
     end
   end
 

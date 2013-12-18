@@ -39,11 +39,12 @@ class Main
   s1 = UDPSocket.new
   ind = Indexing.new
 
-
+=begin
   ind.addIndex('http://test.com', 'Hello', '4')
   ind.addIndex('test2.com', 'Bye', '5')
   ind.updateIndex('Hello', 'http://test.com')
   ind.printTable
+=end
 
 
   if !@@options[:node_id].nil?
