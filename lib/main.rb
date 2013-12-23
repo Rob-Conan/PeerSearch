@@ -28,8 +28,16 @@ class Main
       @@options[:index] = a
     end
 
-    opts.on('--bootid', 'bootid ID', 'Bootstrap ID') do |i|
-      @@options[:bootid] = i
+    opts.on('--bootid', '--bootid ID', 'Bootstrap ID') do |i|
+      @@options[:closest] = i
+    end
+
+    opts.on('--send', 'Send Index Message') do |send|
+      @@options[:send] = send
+    end
+
+    opts.on('--search', '--search [search]', 'Search for keyword') do |search|
+      @@options[:search] = search
     end
 
   end
@@ -43,7 +51,8 @@ class Main
   ind.addIndex('http://test.com', 'Hello', '4')
   ind.addIndex('test2.com', 'Bye', '5')
   ind.updateIndex('Hello', 'http://test.com')
-  ind.printTable
+  ap ind.getIndex('Bye')
+  #ind.printTable
 =end
 
 
@@ -64,15 +73,27 @@ class Main
     if @@options[:index].nil?
       raise TypeError, 'Please include this Node\'s ID\Index value'
     end
-    if @@options[:bootid].nil?
-      raise TypeError, 'Please include the Bootsrap ID'
+    if @@options[:closest].nil?
+      raise TypeError, 'Please include the nearest node ID to this node'
     end
+    puts 'Client node'
     n1.init(s1, @@options[:port])
-    n1.joinNetwork(@@options[:bootstrap_ip], @@options[:index], @@options[:bootid])
-
+    n1.joinNetwork(@@options[:bootstrap_ip], @@options[:index], @@options[:closest])
+    if !@@options[:send].nil?
+      stuff = []
+      sleep(10)
+      stuff.push('Joining2')
+      stuff.push('Joinin')
+      n1.indexPage('http://test.com', stuff)
+      sleep(10)
+    end
+    if !@@options[:search].nil?
+      search = []
+      search.push('Joining2')
+      n1.search(search)
+    end
+    #n1.leaveNetwork(1)
   end
 
-
-  ##~~ More stuff goes here ~~##
   $thread.join
 end
