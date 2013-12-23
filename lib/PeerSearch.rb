@@ -45,6 +45,7 @@ class PeerSearch
     @routing = Routing.new(@index, @this_ip)
     @indexing = Indexing.new
     @net = NetworkControl.new(@routing, @indexing)
+    #If not bootstrap, send join message then listen, otherwise, listen
     if @index != @closest #Not Bootstrap node
       @node_socket.bind(@this_ip.split(':')[0], @this_ip.split(':')[1])
       @node_socket.send @mf.JOINING_NETWORK_SIMPLIFIED(@index, @closest, @this_ip), 0, @node_ip[0], @node_ip[1]
@@ -67,6 +68,8 @@ class PeerSearch
   def indexPage(url, words)
     #Waiting not efficient
     #With time, extend to use threads and dynamic variables
+    #For each word - Find nearest node, send, wait for responds, if none in 30 seconds
+    #Send ping, if no reply in 10 seconds, delete from routing table
     $time1 = Time.now
     words.each do |a|
       puts "Sending #{a}"

@@ -48,3 +48,11 @@ The commands to run from the command line are as follows
  7. The search term to search for on the network
 
   --search []
+
+## Extras/Notes
+
+The additional command line parameters are used to provide easier debugging then instanciating the project in a single terminal window
+
+The IP:PORT combination is passed through regex to ensure the format of 0-255.0-255.0-255.0-255:0-9999
+
+

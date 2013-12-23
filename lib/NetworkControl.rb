@@ -28,17 +28,19 @@ class NetworkControl
     ap process
     case process['type']
       when 'JOINING_NETWORK_SIMPLIFIED'
+        #Update routing table
         @rt.update(process['node_id'], process['ip_address'])
+        #Find closest node
         @rt.findClosest(process['node_id'].to_i)
+        #Provided the closest is not us or the sender
         if @rt.minID != @rt.nodeID && @rt.minID != process['node_id']
-          #Not sure if target_id is correct
           UDPSocket.open.send @mf.JOINING_NETWORK_RELAY_SIMPLIFIED(
                                   process['node_id'], process['target_id'], @rt.nodeID),
                               0, @rt.minIP[0], @rt.minIP[1]
         else
+          #We are the closest - send routing info back
           puts 'No other nodes to contact'
           nodeIP = process['ip_address']
-          #puts "Node id #{@rt.nodeID}"
           tempTable = @rt.routingTable
           tempTable[@rt.nodeID] = @rt.nodeIPvalue
           UDPSocket.open.send @mf.ROUTING_INFO(@rt.nodeID, process['node_id'], @rt.nodeIPvalue, tempTable), 0, nodeIP.split(':')[0], nodeIP.split(':')[1]
@@ -60,7 +62,6 @@ class NetworkControl
             if id.to_i != @rt.nodeID.to_i
               @rt.update(id, ip)
             end
-            #Not sure if id and ip are correct as route_table is a hash of an array of hashes (hashception)
           end
         else
           @rt.findClosest(process['gateway_id'])
@@ -76,8 +77,6 @@ class NetworkControl
           @in.updateIndex(process['keyword'], process['link'])
           @rt.findClosest(process['sender_id'])
           puts "Sending back ACK_INDEX from #{@rt.nodeID}"
-          puts "Sender #{process['sender_id']}"
-          puts "Node IP: #{@rt.minIP}"
           UDPSocket.open.send @mf.ACK_INDEX(process['sender_id'], process['keyword']), 0, @rt.minIP[0], @rt.minIP[1]
         else
           if @rt.findClosest(process['target_id'].to_i) != @rt.nodeID
