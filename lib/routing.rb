@@ -15,13 +15,13 @@ class Routing
     @nodeIPvalue = myIP
     @nodeIP = myIP.to_s.split(':')
   end
-
+  # Never used
   def convertToArray
     routingTable.each do |key, value|
       routingArray.push({'node_id' => key, 'ip_address' => value})
     end
   end
-
+  # Update the routing table
   def update(id, ip)
     if routingTable.empty?
       puts 'Table empty'
@@ -33,7 +33,7 @@ class Routing
       routingTable[id] = ip
     end
   end
-
+  # Find closest node
   def findClosest(input)
     @closestID = (@nodeID * @nodeID).abs
     if @routingTable.has_key?(input)
@@ -42,11 +42,6 @@ class Routing
     #Need condition if the orignal closestID is the closest
     routingTable.each do |id, ip|
       temp = (id.to_i - input).abs
-      #  if id.to_i == input
-      #    @minIP = ip.to_s.split(':')
-      #    ap @minIP
-      #   break
-      #   end
       if @closestID >= temp
         @closestID = temp
         @minID = id
@@ -54,7 +49,7 @@ class Routing
       end
     end
   end
-
+# Broken logic
   def ifCloserNode(input)
     routingTable.each do |id, ip|
       if input.to_i < id.to_i

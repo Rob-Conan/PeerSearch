@@ -1,5 +1,7 @@
 # PeerSearch
 
+Robert Conan - 09469320
+
 Originally designed as a gem, this is no longer the case. All files are contained inside the lib directory
 
 ## Usage
